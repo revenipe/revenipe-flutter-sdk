@@ -1,0 +1,9 @@
+## 0.0.1
+
+- Refactored the package into a stronger SDK core.
+- Added `RevenipeConfig` for immutable SDK configuration.
+- Added `RevenipeSession` for identified-user state.
+- Replaced raw response handling with typed transport parsing.
+- Added typed SDK exceptions.
+- Cleaned the public export surface.
+- Simplified internal boundaries for future entitlement and usage features.

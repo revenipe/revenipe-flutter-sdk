@@ -1,0 +1,20 @@
+name: revenipe_flutter
+description: Base Flutter SDK for Revenipe with a clean core architecture for configuration, transport, sessions, and typed models.
+version: 0.0.1
+homepage:
+
+environment:
+  sdk: ^3.9.2
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  dio: ^5.9.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
