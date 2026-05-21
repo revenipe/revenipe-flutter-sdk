@@ -38,6 +38,7 @@ class Revenipe {
   RevenipeSession? get session => _session;
   String? get appId => _config?.appId;
   String? get currentCustomerId => _session?.customerId;
+  RevenipeCustomer? get customer => _session?.customer;
 
   /// Cancels an active recurring add-on for the current customer.
   ///
