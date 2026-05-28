@@ -40,45 +40,6 @@ class Revenipe {
   String? get currentCustomerId => _session?.customerId;
   RevenipeCustomer? get customer => _session?.customer;
 
-  /// Cancels an active recurring add-on for the current customer.
-  ///
-  /// If the customer has one cancelable add-on, it is selected automatically.
-  /// If the customer has multiple cancelable add-ons, pass [productId] to choose
-  /// which add-on to cancel.
-  ///
-  /// This method only works for recurring add-ons. One-off add-ons cannot be
-  /// canceled because they are already purchased grants or credit packs.
-  ///
-  /// After calling this method, refresh the customer to get the updated add-on
-  /// state.
-  ///
-  /// Example:
-  /// ```dart
-  /// await Revenipe.instance.cancelAddOn(
-  ///   customer: customer,
-  /// );
-  /// ```
-  ///
-  /// Example with a specific add-on:
-  /// ```dart
-  /// await Revenipe.instance.cancelAddOn(
-  ///   customer: customer,
-  ///   productId: 'extra_credits_monthly',
-  /// );
-  /// ```
-  Future<CancelAddOnResponse> cancelAddOn({
-    required RevenipeCustomer customer,
-    String? productId,
-  }) async {
-    final purchaseService = _requirePurchaseService();
-
-    final response = await purchaseService.cancelAddOn(
-      customer: customer,
-      productId: productId,
-    );
-
-    return response;
-  }
 
   /// Cancels an active or trialing subscription for the current customer.
   ///
@@ -119,14 +80,15 @@ class Revenipe {
   /// );
   /// ```
   Future<CancelSubscriptionResponse> cancelSubscription({
-    required RevenipeCustomer customer,
     String? productId,
     SubscriptionCancelMode cancelMode = SubscriptionCancelMode.periodEnd,
   }) async {
     final purchaseService = _requirePurchaseService();
 
+    final cus = _requireCustomer();
+
     final response = await purchaseService.cancelSubscription(
-      customer: customer,
+      customer: cus,
       productId: productId,
       cancelMode: cancelMode,
     );
@@ -172,13 +134,13 @@ class Revenipe {
   /// );
   /// ```
   Future<ChangeSubscriptionPlanResponse> changeSubscription({
-    required RevenipeCustomer customer,
     required String newProductId,
     String? fromProductId,
   }) async {
     final purchaseService = _requirePurchaseService();
+    final cus = _requireCustomer();
     final response = await purchaseService.changeSubscriptionPlan(
-      customer: customer,
+      customer: cus,
       newProductId: newProductId,
       fromProductId: fromProductId,
     );
@@ -728,6 +690,16 @@ class Revenipe {
     }
 
     return _purchaseService!;
+  }
+
+  RevenipeCustomer _requireCustomer() {
+    if (!isInitialized || customer == null) {
+      throw const RevenipeConfigurationException(
+        'Revenipe is not configured or the user is not logged in. Call Revenipe.instance.configure(...) / evenipe.instance.login(...) first.',
+      );
+    }
+
+    return customer!;
   }
 
   /// Clears the current customer session.
