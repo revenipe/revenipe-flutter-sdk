@@ -79,28 +79,6 @@ class PurchaseService {
           CancelSubscriptionResponse.fromJson(data as Map<String, dynamic>),
     );
   }
-
-  Future<CancelAddOnResponse> cancelAddOn({
-    required RevenipeCustomer customer,
-    String? productId,
-  }) async {
-    final addOn = resolveAddOnForCancel(
-      addOns: customer.addOns,
-      productId: productId,
-    );
-
-    final request = _CancelAddOnRequest(
-      clientId: customer.customerId,
-      sourceId: addOn.accessSourceId,
-    );
-
-    return _client.post<CancelAddOnResponse>(
-      path: '${_clientBasePath}add_on/cancel',
-      data: request.toJson(),
-      parser: (data) =>
-          CancelAddOnResponse.fromJson(data as Map<String, dynamic>),
-    );
-  }
 }
 
 class _ChangeSubscriptionPlanRequest {
@@ -140,16 +118,5 @@ class _CancelSubscriptionRequest {
       'source_id': sourceId,
       'cancel_mode': cancelMode.value,
     };
-  }
-}
-
-class _CancelAddOnRequest {
-  final String clientId;
-  final String sourceId;
-
-  const _CancelAddOnRequest({required this.clientId, required this.sourceId});
-
-  Map<String, dynamic> toJson() {
-    return {'client_id': clientId, 'source_id': sourceId};
   }
 }
