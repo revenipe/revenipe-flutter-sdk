@@ -53,7 +53,7 @@ class RevenipeCustomer {
     List<CustomerSubscription>? subscriptions,
     List<CustomerAddOn>? addOns,
     String? customerId,
-    List<CustomerBasePlan>? basePlans
+    List<CustomerBasePlan>? basePlans,
   }) {
     return RevenipeCustomer(
       basePlans: basePlans ?? this.basePlans,
@@ -65,7 +65,7 @@ class RevenipeCustomer {
     );
   }
 
-   CustomerBasePlan? get currentBasePlan {
+  CustomerBasePlan? get currentBasePlan {
     if (basePlans.isEmpty) {
       return null;
     }
@@ -76,11 +76,9 @@ class RevenipeCustomer {
   bool get hasBasePlan => currentBasePlan != null;
 
   bool get hasActiveSubscription {
-    return subscriptions.any(
-      (subscription) {
-        final status = subscription.status.toLowerCase();
-        return status == 'active' || status == 'trialing';
-      },
-    );
+    return subscriptions.any((subscription) {
+      final status = subscription.status.toLowerCase();
+      return status == 'active' || status == 'trialing';
+    });
   }
 }

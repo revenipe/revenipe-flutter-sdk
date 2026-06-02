@@ -9,14 +9,18 @@ class CustomerService {
 
   static const String _clientBasePath = 'v1/customer/usage/';
 
-  Future<TrackEntitlementResponse> track(RevenipeSession session, String entitlementId, int value) {
-
+  Future<TrackEntitlementResponse> track(
+    RevenipeSession session,
+    String entitlementId,
+    int value,
+  ) {
     var customer = session.customer;
 
-    var result = customer.entitlements.where((item) => item.entitlementId == entitlementId);
+    var result = customer.entitlements.where(
+      (item) => item.entitlementId == entitlementId,
+    );
 
     var entitlement = result.isNotEmpty ? result.first : null;
-
 
     return _client.post<TrackEntitlementResponse>(
       path: '${_clientBasePath}track',
@@ -24,9 +28,10 @@ class CustomerService {
         'access_source_id': entitlement?.accessSourceId,
         'entitlement_id': entitlementId,
         'client_id': session.customerId,
-        'value': value
+        'value': value,
       },
-      parser: (data) => TrackEntitlementResponse.fromJson(data as Map<String, dynamic>),
+      parser: (data) =>
+          TrackEntitlementResponse.fromJson(data as Map<String, dynamic>),
     );
   }
 }

@@ -21,8 +21,7 @@ class PaymentSheetPurchase {
       paymentIntentClientSecret:
           json['payment_intent_client_secret'] as String?,
       subscriptionId: json['subscription_id'] as String?,
-      setupIntentClientSecret:
-          json['setup_intent_client_secret'] as String?,
+      setupIntentClientSecret: json['setup_intent_client_secret'] as String?,
     );
   }
 

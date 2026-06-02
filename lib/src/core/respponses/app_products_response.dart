@@ -7,7 +7,8 @@ class AppProductsResponse {
 
   factory AppProductsResponse.fromJson(Map<String, dynamic> json) {
     return AppProductsResponse(
-      products: (json['products'] as List<dynamic>?)
+      products:
+          (json['products'] as List<dynamic>?)
               ?.map((e) => Product.fromJson(e))
               .toList() ??
           [],

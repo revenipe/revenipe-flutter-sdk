@@ -17,12 +17,7 @@ class UsageKey {
     );
   }
 
-
-  UsageKey copyWith({
-    String? usageKeyId,
-    String? name,
-    int? remaining,
-  }) {
+  UsageKey copyWith({String? usageKeyId, String? name, int? remaining}) {
     return UsageKey(
       usageKeyId: usageKeyId ?? this.usageKeyId,
       name: name ?? this.name,

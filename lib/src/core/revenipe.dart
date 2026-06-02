@@ -1,4 +1,5 @@
 import 'package:revenipe_flutter/src/core/respponses/app_products_response.dart';
+import 'package:revenipe_flutter/src/core/respponses/attach_payment_method_to_subscription_response.dart';
 import 'package:revenipe_flutter/src/core/respponses/cancel_add_on_response.dart';
 import 'package:revenipe_flutter/src/core/respponses/cancel_subscription_response.dart';
 import 'package:revenipe_flutter/src/core/respponses/change_subscription_response.dart';
@@ -7,6 +8,7 @@ import 'package:revenipe_flutter/src/core/respponses/track_respopnse.dart';
 import 'package:revenipe_flutter/src/core/utils/anonym_id.dart';
 import 'package:revenipe_flutter/src/core/utils/session_updates.dart';
 import 'package:revenipe_flutter/src/models/models.dart';
+import 'package:revenipe_flutter/src/purchase/attach_payment_method_options.dart';
 import 'package:revenipe_flutter/src/purchase/purchase_options.dart';
 import 'package:revenipe_flutter/src/purchase/subscription_cancel_mode.dart';
 import 'package:revenipe_flutter/src/services/app_service.dart';
@@ -40,6 +42,47 @@ class Revenipe {
   String? get currentCustomerId => _session?.customerId;
   RevenipeCustomer? get customer => _session?.customer;
 
+  /// Starts the flow for attaching a payment method to the customer's
+  /// eligible trial subscription.
+  ///
+  /// This is intended for direct trials that were started without a payment
+  /// method. Once the payment method is successfully attached, the subscription
+  /// can continue beyond the trial period instead of being canceled by Stripe.
+  ///
+  /// By default, the SDK automatically resolves the customer's only eligible
+  /// trial subscription. When the customer has multiple eligible trial
+  /// subscriptions, pass [productId] to select the subscription associated
+  /// with that product.
+  ///
+  /// The selected flow is configured through [options]:
+  ///
+  /// - Hosted Checkout returns a Checkout URL that must be opened by the app.
+  /// - PaymentSheet returns the setup data required to complete the native
+  ///   payment method collection flow.
+  ///
+  /// The payment method attachment is finalized asynchronously after Stripe
+  /// confirms the SetupIntent. Refresh the customer after completion to obtain
+  /// the updated subscription state.
+  ///
+  /// Throws a [StateError] when no eligible trial subscription can be resolved,
+  /// when multiple eligible subscriptions exist without [productId], or when
+  /// the selected product does not have an eligible trial subscription.
+  Future<AttachPaymentMethodToSubscriptionResponse>
+  attachPaymentMethodToSubscription({
+    String? productId,
+    required AttachPaymentMethodOptions options,
+  }) async {
+    final purchaseService = _requirePurchaseService();
+    final customer = _requireCustomer();
+
+    final response = await purchaseService.attachPaymentMethodToSubscription(
+      customer: customer,
+      fromProductId: productId,
+      options: options,
+    );
+
+    return response;
+  }
 
   /// Cancels an active or trialing subscription for the current customer.
   ///

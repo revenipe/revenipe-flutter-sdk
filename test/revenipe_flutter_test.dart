@@ -11,7 +11,8 @@ import 'package:revenipe_flutter/revenipe_flutter.dart';
 // Keep real secrets out of git.
 
 const baseUrl = 'https://staging.revenipe.com/';
-const appKey = 'app_sandbox_6a18a8b24c6877c0d4a784975fdf257b51c768d246e22f1979160bc6ed821c92348a81c2';
+const appKey =
+    'app_sandbox_6a18a8b24c6877c0d4a784975fdf257b51c768d246e22f1979160bc6ed821c92348a81c2';
 const customerId = 'payment_flow_test_customer';
 
 // Subscription products:
@@ -78,45 +79,32 @@ void main() {
   group('1. SDK setup', () {
     test('configures SDK, logs in customer, fetches products', () async {
       if (!_hasRequiredSetupPlaceholders) {
-        _printSkip(
-          'SDK setup',
-          'Fill baseUrl, appKey, and customerId first.',
-        );
+        _printSkip('SDK setup', 'Fill baseUrl, appKey, and customerId first.');
         return;
       }
 
       expect(revenipe.isInitialized, isTrue);
       expect(revenipe.isIdentified, isTrue);
-      
 
       await fetchAndPrintProducts(revenipe);
 
-      await refreshCustomerAndPrintState(
-        revenipe,
-        label: 'Initial customer',
-      );
+      await refreshCustomerAndPrintState(revenipe, label: 'Initial customer');
     });
   });
 
   group('Check BasePlan', () {
     test('purchases Basic subscription product through Checkout', () async {
-
-      if(revenipe.customer!.hasBasePlan)
-      {
+      if (revenipe.customer!.hasBasePlan) {
         print('Plan Name: ${revenipe.customer!.currentBasePlan!.productName}');
         print('Period End: ${revenipe.customer!.currentBasePlan!.periodEnd}');
         print('Interval: ${revenipe.customer!.currentBasePlan!.interval}');
-      }
-      else
-      {
+      } else {
         print("customer has no base plan");
       }
     });
   });
 
-  
-
- /* group('2. Checkout subscription purchase', () {
+  /* group('2. Checkout subscription purchase', () {
     test('purchases Basic subscription product through Checkout', () async {
       if (!_canRunProductFlow(basicProductId, 'basicProductId')) return;
 
@@ -143,9 +131,7 @@ void main() {
     });
   });*/
 
-  
-
- /* group('3. Direct trial subscription', () {
+  /* group('3. Direct trial subscription', () {
     test('starts direct trial with separate trial product ID', () async {
       if (!_canRunProductFlow(
         directTrialProductId,
@@ -257,7 +243,7 @@ void main() {
     });
   });*/
 
- /* group('5. Active subscription plan change', () {
+  /* group('5. Active subscription plan change', () {
     test('upgrades Basic to Pro, then schedules/downgrades Pro to Basic', () async {
       if (!_canRunProductFlow(basicProductId, 'basicProductId')) return;
       if (!_canRunProductFlow(proProductId, 'proProductId')) return;
@@ -311,7 +297,7 @@ void main() {
     });
   });*/
 
- /* group('6. Subscription cancel', () {
+  /* group('6. Subscription cancel', () {
     test('cancels active Basic subscription immediately', () async {
       if (!_canRunProductFlow(basicProductId, 'basicProductId')) return;
 
@@ -366,9 +352,7 @@ void main() {
     });
   });*/
 
-  
-
- /* group('8. Checkout one-off add-on purchase', () {
+  /* group('8. Checkout one-off add-on purchase', () {
     test('purchases one-off add-on through Checkout', () async {
       if (!_canRunProductFlow(oneOffAddOnProductId, 'oneOffAddOnProductId')) {
         return;
@@ -398,8 +382,6 @@ void main() {
       print('One-off add-on billingType: ${addOn?.billingType}');
     });
   });*/
-
-
 
   /*group('9. Checkout recurring add-on purchase', () {
     test('purchases recurring add-on through Checkout', () async {
@@ -448,8 +430,6 @@ void main() {
       print('Recurring add-on billingType: ${addOn?.billingType}');
     });
   });*/
-
-  
 
   /*group('10. Entitlement checks and usage tracking', () {
     test('checks entitlement/subscription helpers and tracks usage', () async {
@@ -507,7 +487,7 @@ void main() {
     });
   });*/
 
- /* group('11. Failed payment placeholders', () {
+  /* group('11. Failed payment placeholders', () {
     test('manual Stripe failed payment scenarios', () {
       print('Manual failed payment cases to run later with Stripe test cards:');
       print('');
@@ -704,7 +684,9 @@ Future<bool> _openUrlWithPlatformBrowser(String url) async {
 }
 
 Future<void> waitForWebhookProcessing() async {
-  print('Waiting $webhookWaitSeconds seconds for Revenipe webhook processing...');
+  print(
+    'Waiting $webhookWaitSeconds seconds for Revenipe webhook processing...',
+  );
   await Future<void>.delayed(const Duration(seconds: webhookWaitSeconds));
 }
 
@@ -823,11 +805,11 @@ String formatSubscription(CustomerSubscription? subscription) {
   final pendingText = pending == null
       ? 'none'
       : 'type=${pending.type}, '
-          'billingMode=${pending.billingMode}, '
-          'status=${pending.status}, '
-          'from=${pending.fromProductId}, '
-          'to=${pending.toProductId}, '
-          'effectiveAt=${pending.effectiveAt}';
+            'billingMode=${pending.billingMode}, '
+            'status=${pending.status}, '
+            'from=${pending.fromProductId}, '
+            'to=${pending.toProductId}, '
+            'effectiveAt=${pending.effectiveAt}';
 
   return 'productId=${subscription.productId}, '
       'name=${subscription.productName}, '
@@ -883,10 +865,7 @@ CustomerSubscription? _findSubscription(
 
 bool _canRunProductFlow(String productId, String placeholderName) {
   if (!_hasRequiredSetupPlaceholders) {
-    _printSkip(
-      placeholderName,
-      'Fill baseUrl, appKey, and customerId first.',
-    );
+    _printSkip(placeholderName, 'Fill baseUrl, appKey, and customerId first.');
     return false;
   }
 

@@ -2,10 +2,7 @@ class CheckoutPurchase {
   final String sessionId;
   final String checkoutUrl;
 
-  const CheckoutPurchase({
-    required this.sessionId,
-    required this.checkoutUrl,
-  });
+  const CheckoutPurchase({required this.sessionId, required this.checkoutUrl});
 
   factory CheckoutPurchase.fromJson(Map<String, dynamic> json) {
     return CheckoutPurchase(
@@ -15,9 +12,6 @@ class CheckoutPurchase {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'session_id': sessionId,
-      'checkout_url': checkoutUrl,
-    };
+    return {'session_id': sessionId, 'checkout_url': checkoutUrl};
   }
 }

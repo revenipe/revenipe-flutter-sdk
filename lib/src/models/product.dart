@@ -33,7 +33,8 @@ class Product {
       recurringInterval: json['recurring_interval'],
       appStoreProductId: json['app_store_product_id'],
       playStoreProductId: json['play_store_product_id'],
-      entitlements: (json['entitlements'] as List<dynamic>?)
+      entitlements:
+          (json['entitlements'] as List<dynamic>?)
               ?.map((e) => ProductEntitlement.fromJson(e))
               .toList() ??
           [],

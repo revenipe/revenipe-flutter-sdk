@@ -12,6 +12,8 @@ class CustomerSubscription {
   final bool willCancelAtPeriodEnd;
   final bool canCancel;
   final CustomerSubscriptionPendingChange? pendingChange;
+  final bool paymentMethodAttached;
+  final DateTime? paymentMethodAttachedAt;
 
   const CustomerSubscription({
     required this.accessSourceId,
@@ -25,7 +27,13 @@ class CustomerSubscription {
     required this.willCancelAtPeriodEnd,
     required this.canCancel,
     this.pendingChange,
+    required this.paymentMethodAttached,
+    this.paymentMethodAttachedAt,
   });
+
+  bool get isTrialing => status == 'trialing';
+
+  bool get canAttachPaymentMethod => isTrialing && !paymentMethodAttached;
 
   factory CustomerSubscription.fromJson(Map<String, dynamic> json) {
     return CustomerSubscription(
@@ -49,6 +57,10 @@ class CustomerSubscription {
           : CustomerSubscriptionPendingChange.fromJson(
               json['pending_change'] as Map<String, dynamic>,
             ),
+      paymentMethodAttached: json['payment_method_attached'] as bool? ?? false,
+      paymentMethodAttachedAt: json['payment_method_attached_at'] == null
+          ? null
+          : DateTime.parse(json['payment_method_attached_at'] as String),
     );
   }
 
@@ -65,6 +77,8 @@ class CustomerSubscription {
     bool? canCancel,
     CustomerSubscriptionPendingChange? pendingChange,
     bool clearPendingChange = false,
+    bool? paymentMethodAttached,
+    DateTime? paymentMethodAttachedAt,
   }) {
     return CustomerSubscription(
       accessSourceId: accessSourceId ?? this.accessSourceId,
@@ -81,6 +95,10 @@ class CustomerSubscription {
       pendingChange: clearPendingChange
           ? null
           : pendingChange ?? this.pendingChange,
+      paymentMethodAttached:
+          paymentMethodAttached ?? this.paymentMethodAttached,
+      paymentMethodAttachedAt:
+          paymentMethodAttachedAt ?? this.paymentMethodAttachedAt,
     );
   }
 }

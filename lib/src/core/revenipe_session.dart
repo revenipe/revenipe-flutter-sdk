@@ -5,15 +5,18 @@ class RevenipeSession {
   final DateTime identifiedAt;
   final List<Product> products;
 
-  const RevenipeSession({required this.customer, required this.identifiedAt, required this.products});
+  const RevenipeSession({
+    required this.customer,
+    required this.identifiedAt,
+    required this.products,
+  });
 
   String get customerId => customer.customerId;
 
   RevenipeSession copyWith({
     RevenipeCustomer? customer,
     DateTime? identifiedAt,
-    List<Product>? products
-
+    List<Product>? products,
   }) {
     return RevenipeSession(
       products: products ?? this.products,

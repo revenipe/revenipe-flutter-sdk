@@ -7,25 +7,22 @@ class RevenipeHttpClient {
   final Dio _dio;
 
   RevenipeHttpClient({required RevenipeConfig config})
-      : _dio = Dio(
-          BaseOptions(
-            baseUrl: config.baseUrl,
-            connectTimeout: config.connectTimeout,
-            receiveTimeout: config.receiveTimeout,
-            headers: <String, Object?>{
-              'Content-Type': 'application/json',
-              'Authorization': config.appId,
-              ...config.defaultHeaders,
-            },
-            responseType: ResponseType.json,
-          ),
-        ) {
+    : _dio = Dio(
+        BaseOptions(
+          baseUrl: config.baseUrl,
+          connectTimeout: config.connectTimeout,
+          receiveTimeout: config.receiveTimeout,
+          headers: <String, Object?>{
+            'Content-Type': 'application/json',
+            'Authorization': config.appId,
+            ...config.defaultHeaders,
+          },
+          responseType: ResponseType.json,
+        ),
+      ) {
     if (config.enableLogging) {
       _dio.interceptors.add(
-        LogInterceptor(
-          requestBody: true,
-          responseBody: true,
-        ),
+        LogInterceptor(requestBody: true, responseBody: true),
       );
     }
   }

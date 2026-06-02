@@ -13,14 +13,16 @@ class AppService {
   Future<AppProductsResponse> getProducts() {
     return _client.get<AppProductsResponse>(
       path: '${_clientBasePath}products',
-      parser: (data) => AppProductsResponse.fromJson(data as Map<String, dynamic>),
+      parser: (data) =>
+          AppProductsResponse.fromJson(data as Map<String, dynamic>),
     );
   }
 
   Future<AppProductsResponse> startPurchase() {
     return _client.get<AppProductsResponse>(
       path: '${_clientBasePath}products',
-      parser: (data) => AppProductsResponse.fromJson(data as Map<String, dynamic>),
+      parser: (data) =>
+          AppProductsResponse.fromJson(data as Map<String, dynamic>),
     );
   }
 }

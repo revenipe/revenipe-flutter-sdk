@@ -12,9 +12,7 @@ class AuthService {
   Future<RevenipeCustomer> loginCustomer(String customerId) {
     return _client.post<RevenipeCustomer>(
       path: '${_clientBasePath}auth',
-      data: <String, dynamic>{
-        'client_id': customerId,
-      },
+      data: <String, dynamic>{'client_id': customerId},
       parser: (data) => RevenipeCustomer.fromJson(data as Map<String, dynamic>),
     );
   }
