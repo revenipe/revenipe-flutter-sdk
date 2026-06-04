@@ -18,7 +18,7 @@ class AttachPaymentMethodToSubscriptionResponse {
   factory AttachPaymentMethodToSubscriptionResponse.fromJson(
     Map<String, dynamic> json,
   ) {
-    final purchaseMethodValue = json['purchase_method'] as String;
+    final purchaseMethodValue = json['mode'] as String;
 
     return AttachPaymentMethodToSubscriptionResponse(
       purchaseMethod: RevenipePurchaseMethod.values.firstWhere(
