@@ -13,3 +13,7 @@
 - Fixed customer identity handling for purchase flows.
 - Fixed hosted Checkout payment-method attachment.
 - Added separate manual Checkout flow test scripts.
+
+## 0.1.2
+
+- Updated README.md
