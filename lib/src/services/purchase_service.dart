@@ -6,9 +6,11 @@ import 'package:revenipe_flutter/src/core/respponses/cancel_subscription_respons
 import 'package:revenipe_flutter/src/core/respponses/change_subscription_response.dart';
 import 'package:revenipe_flutter/src/core/respponses/start_purchase_response.dart';
 import 'package:revenipe_flutter/src/core/respponses/track_respopnse.dart';
+import 'package:revenipe_flutter/src/core/respponses/uncancel_subscription_response.dart';
 import 'package:revenipe_flutter/src/core/utils/reslovers/cancel_add_on_reslover.dart';
 import 'package:revenipe_flutter/src/core/utils/reslovers/cancel_subscription_reslover.dart';
 import 'package:revenipe_flutter/src/core/utils/reslovers/from_subscription_reslover.dart';
+import 'package:revenipe_flutter/src/core/utils/reslovers/uncancel_subscription_reslover.dart';
 import 'package:revenipe_flutter/src/purchase/attach_payment_method_options.dart';
 import 'package:revenipe_flutter/src/purchase/purchase_options.dart';
 import 'package:revenipe_flutter/src/purchase/subscription_cancel_mode.dart';
@@ -109,6 +111,28 @@ class PurchaseService {
           CancelSubscriptionResponse.fromJson(data as Map<String, dynamic>),
     );
   }
+
+  Future<UncancelSubscriptionResponse> uncancelSubscription({
+    required RevenipeCustomer customer,
+    required String productId,
+  }) async {
+    final subscription = resolveSubscriptionForUncancel(
+      subscriptions: customer.subscriptions,
+      productId: productId,
+    );
+
+    final request = _UncancelSubscriptionRequest(
+      clientId: customer.customerId,
+      sourceId: subscription.accessSourceId,
+    );
+
+    return _client.post<UncancelSubscriptionResponse>(
+      path: '${_clientBasePath}subscription/uncancel',
+      data: request.toJson(),
+      parser: (data) =>
+          UncancelSubscriptionResponse.fromJson(data as Map<String, dynamic>),
+    );
+  }
 }
 
 class _AttachPaymentMethodToSubscriptionPlanRequest {
@@ -173,6 +197,23 @@ class _CancelSubscriptionRequest {
       'client_id': clientId,
       'source_id': sourceId,
       'cancel_mode': cancelMode.value,
+    };
+  }
+}
+
+class _UncancelSubscriptionRequest {
+  final String clientId;
+  final String sourceId;
+
+  const _UncancelSubscriptionRequest({
+    required this.clientId,
+    required this.sourceId,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'client_id': clientId,
+      'source_id': sourceId,
     };
   }
 }

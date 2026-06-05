@@ -5,6 +5,7 @@ import 'package:revenipe_flutter/src/core/respponses/cancel_subscription_respons
 import 'package:revenipe_flutter/src/core/respponses/change_subscription_response.dart';
 import 'package:revenipe_flutter/src/core/respponses/start_purchase_response.dart';
 import 'package:revenipe_flutter/src/core/respponses/track_respopnse.dart';
+import 'package:revenipe_flutter/src/core/respponses/uncancel_subscription_response.dart';
 import 'package:revenipe_flutter/src/core/utils/anonym_id.dart';
 import 'package:revenipe_flutter/src/core/utils/session_updates.dart';
 import 'package:revenipe_flutter/src/models/models.dart';
@@ -41,6 +42,33 @@ class Revenipe {
   String? get appId => _config?.appId;
   String? get currentCustomerId => _session?.customerId;
   RevenipeCustomer? get customer => _session?.customer;
+
+  /// Uncancels a subscription that is currently scheduled to cancel at the end
+  /// of the billing period.
+  ///
+  /// The [productId] is required to identify which subscription should be
+  /// uncanceled. The customer must already be logged in and the matching
+  /// subscription must have [CustomerSubscription.canUncancel] set to `true`.
+  ///
+  /// Returns an [UncancelSubscriptionResponse] containing whether the operation
+  /// was successful.
+  ///
+  /// Throws a [StateError] if no customer is logged in or if the purchase service
+  /// is not configured.
+  Future<UncancelSubscriptionResponse> uncancelSubscription({
+    required String productId,
+  }) async {
+    final purchaseService = _requirePurchaseService();
+
+    final cus = _requireCustomer();
+
+    final response = await purchaseService.uncancelSubscription(
+      customer: cus,
+      productId: productId,
+    );
+
+    return response;
+  }
 
   /// Starts the flow for attaching a payment method to the customer's
   /// eligible trial subscription.
