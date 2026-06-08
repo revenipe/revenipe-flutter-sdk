@@ -37,8 +37,7 @@ Revenipe is a monetization backend and Flutter SDK for apps using **Stripe** and
 ### Install
 
 ```yaml
-dependencies:
-  revenipe_flutter: ^0.0.1
+flutter pub add revenipe_flutter
 ```
 
 ```dart
