@@ -7,7 +7,8 @@ sealed class RevenipeException implements Exception {
   const RevenipeException(this.message, {this.statusCode});
 
   @override
-  String toString() => 'RevenipeException(message: $message, statusCode: $statusCode)';
+  String toString() =>
+      'RevenipeException(message: $message, statusCode: $statusCode)';
 }
 
 class RevenipeConfigurationException extends RevenipeException {
@@ -54,10 +55,7 @@ class RevenipeOperationException implements Exception {
   final String message;
   final int? statusCode;
 
-  const RevenipeOperationException({
-    required this.message,
-    this.statusCode,
-  });
+  const RevenipeOperationException({required this.message, this.statusCode});
 
   factory RevenipeOperationException.unknown(String message) {
     return RevenipeOperationException(message: message);

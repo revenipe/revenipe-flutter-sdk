@@ -1,12 +1,15 @@
 import 'package:revenipe_flutter/src/core/respponses/app_products_response.dart';
-import 'package:revenipe_flutter/src/core/respponses/cancel_add_on_response.dart';
+import 'package:revenipe_flutter/src/core/respponses/attach_payment_method_to_subscription_response.dart';
 import 'package:revenipe_flutter/src/core/respponses/cancel_subscription_response.dart';
 import 'package:revenipe_flutter/src/core/respponses/change_subscription_response.dart';
+import 'package:revenipe_flutter/src/core/respponses/refresh_entitlements_response.dart';
 import 'package:revenipe_flutter/src/core/respponses/start_purchase_response.dart';
 import 'package:revenipe_flutter/src/core/respponses/track_respopnse.dart';
+import 'package:revenipe_flutter/src/core/respponses/uncancel_subscription_response.dart';
 import 'package:revenipe_flutter/src/core/utils/anonym_id.dart';
 import 'package:revenipe_flutter/src/core/utils/session_updates.dart';
 import 'package:revenipe_flutter/src/models/models.dart';
+import 'package:revenipe_flutter/src/purchase/attach_payment_method_options.dart';
 import 'package:revenipe_flutter/src/purchase/purchase_options.dart';
 import 'package:revenipe_flutter/src/purchase/subscription_cancel_mode.dart';
 import 'package:revenipe_flutter/src/services/app_service.dart';
@@ -38,42 +41,91 @@ class Revenipe {
   RevenipeSession? get session => _session;
   String? get appId => _config?.appId;
   String? get currentCustomerId => _session?.customerId;
+  RevenipeCustomer? get customer => _session?.customer;
 
-  /// Cancels an active recurring add-on for the current customer.
+
+  /// Refreshes the current customer's entitlements and access state from Revenipe.
   ///
-  /// If the customer has one cancelable add-on, it is selected automatically.
-  /// If the customer has multiple cancelable add-ons, pass [productId] to choose
-  /// which add-on to cancel.
+  /// This updates the active SDK session with the latest entitlements, usage keys,
+  /// subscriptions, add-ons, and base plans returned by the backend.
   ///
-  /// This method only works for recurring add-ons. One-off add-ons cannot be
-  /// canceled because they are already purchased grants or credit packs.
+  /// Returns the raw refresh response from the API.
+  Future<RefreshClientEntitlementsResponse> refreshEntitlements() async {
+    final customerService = _requireCustomerService();
+
+    final cus = _requireCustomer();
+
+    final response = await customerService.refreshEntitlements(cus.customerId);
+
+    _session = _session!.updateFromRefreshResponse(response);
+
+    return response;
+  }
+
+  /// Uncancels a subscription that is currently scheduled to cancel at the end
+  /// of the billing period.
   ///
-  /// After calling this method, refresh the customer to get the updated add-on
-  /// state.
+  /// The [productId] is required to identify which subscription should be
+  /// uncanceled. The customer must already be logged in and the matching
+  /// subscription must have [CustomerSubscription.canUncancel] set to `true`.
   ///
-  /// Example:
-  /// ```dart
-  /// await Revenipe.instance.cancelAddOn(
-  ///   customer: customer,
-  /// );
-  /// ```
+  /// Returns an [UncancelSubscriptionResponse] containing whether the operation
+  /// was successful.
   ///
-  /// Example with a specific add-on:
-  /// ```dart
-  /// await Revenipe.instance.cancelAddOn(
-  ///   customer: customer,
-  ///   productId: 'extra_credits_monthly',
-  /// );
-  /// ```
-  Future<CancelAddOnResponse> cancelAddOn({
-    required RevenipeCustomer customer,
-    String? productId,
+  /// Throws a [StateError] if no customer is logged in or if the purchase service
+  /// is not configured.
+  Future<UncancelSubscriptionResponse> uncancelSubscription({
+    required String productId,
   }) async {
     final purchaseService = _requirePurchaseService();
 
-    final response = await purchaseService.cancelAddOn(
-      customer: customer,
+    final cus = _requireCustomer();
+
+    final response = await purchaseService.uncancelSubscription(
+      customer: cus,
       productId: productId,
+    );
+
+    return response;
+  }
+
+  /// Starts the flow for attaching a payment method to the customer's
+  /// eligible trial subscription.
+  ///
+  /// This is intended for direct trials that were started without a payment
+  /// method. Once the payment method is successfully attached, the subscription
+  /// can continue beyond the trial period instead of being canceled by Stripe.
+  ///
+  /// By default, the SDK automatically resolves the customer's only eligible
+  /// trial subscription. When the customer has multiple eligible trial
+  /// subscriptions, pass [productId] to select the subscription associated
+  /// with that product.
+  ///
+  /// The selected flow is configured through [options]:
+  ///
+  /// - Hosted Checkout returns a Checkout URL that must be opened by the app.
+  /// - PaymentSheet returns the setup data required to complete the native
+  ///   payment method collection flow.
+  ///
+  /// The payment method attachment is finalized asynchronously after Stripe
+  /// confirms the SetupIntent. Refresh the customer after completion to obtain
+  /// the updated subscription state.
+  ///
+  /// Throws a [StateError] when no eligible trial subscription can be resolved,
+  /// when multiple eligible subscriptions exist without [productId], or when
+  /// the selected product does not have an eligible trial subscription.
+  Future<AttachPaymentMethodToSubscriptionResponse>
+  attachPaymentMethodToSubscription({
+    String? productId,
+    required AttachPaymentMethodOptions options,
+  }) async {
+    final purchaseService = _requirePurchaseService();
+    final customer = _requireCustomer();
+
+    final response = await purchaseService.attachPaymentMethodToSubscription(
+      customer: customer,
+      fromProductId: productId,
+      options: options,
     );
 
     return response;
@@ -118,14 +170,15 @@ class Revenipe {
   /// );
   /// ```
   Future<CancelSubscriptionResponse> cancelSubscription({
-    required RevenipeCustomer customer,
     String? productId,
     SubscriptionCancelMode cancelMode = SubscriptionCancelMode.periodEnd,
   }) async {
     final purchaseService = _requirePurchaseService();
 
+    final cus = _requireCustomer();
+
     final response = await purchaseService.cancelSubscription(
-      customer: customer,
+      customer: cus,
       productId: productId,
       cancelMode: cancelMode,
     );
@@ -171,13 +224,13 @@ class Revenipe {
   /// );
   /// ```
   Future<ChangeSubscriptionPlanResponse> changeSubscription({
-    required RevenipeCustomer customer,
     required String newProductId,
     String? fromProductId,
   }) async {
     final purchaseService = _requirePurchaseService();
+    final cus = _requireCustomer();
     final response = await purchaseService.changeSubscriptionPlan(
-      customer: customer,
+      customer: cus,
       newProductId: newProductId,
       fromProductId: fromProductId,
     );
@@ -220,7 +273,8 @@ class Revenipe {
     required MakePurchaseOptions options,
   }) async {
     final purchaseService = _requirePurchaseService();
-    final response = await purchaseService.startPurchase(options);
+    final cus = _requireCustomer();
+    final response = await purchaseService.startPurchase(options, cus.customerId);
     return response;
   }
 
@@ -727,6 +781,16 @@ class Revenipe {
     }
 
     return _purchaseService!;
+  }
+
+  RevenipeCustomer _requireCustomer() {
+    if (!isInitialized || customer == null) {
+      throw const RevenipeConfigurationException(
+        'Revenipe is not configured or the user is not logged in. Call Revenipe.instance.configure(...) / evenipe.instance.login(...) first.',
+      );
+    }
+
+    return customer!;
   }
 
   /// Clears the current customer session.

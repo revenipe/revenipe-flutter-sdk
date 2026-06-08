@@ -1,15 +1,8 @@
 import 'package:revenipe_flutter/revenipe_flutter.dart';
-import 'package:revenipe_flutter/src/core/respponses/app_products_response.dart';
-import 'package:revenipe_flutter/src/core/respponses/cancel_add_on_response.dart';
-import 'package:revenipe_flutter/src/core/respponses/cancel_subscription_response.dart';
-import 'package:revenipe_flutter/src/core/respponses/change_subscription_response.dart';
-import 'package:revenipe_flutter/src/core/respponses/start_purchase_response.dart';
-import 'package:revenipe_flutter/src/core/respponses/track_respopnse.dart';
-import 'package:revenipe_flutter/src/core/utils/reslovers/cancel_add_on_reslover.dart';
+import 'package:revenipe_flutter/src/core/respponses/uncancel_subscription_response.dart';
 import 'package:revenipe_flutter/src/core/utils/reslovers/cancel_subscription_reslover.dart';
 import 'package:revenipe_flutter/src/core/utils/reslovers/from_subscription_reslover.dart';
-import 'package:revenipe_flutter/src/purchase/purchase_options.dart';
-import 'package:revenipe_flutter/src/purchase/subscription_cancel_mode.dart';
+import 'package:revenipe_flutter/src/core/utils/reslovers/uncancel_subscription_reslover.dart';
 import '../network/revenipe_http_client.dart';
 
 class PurchaseService {
@@ -19,12 +12,43 @@ class PurchaseService {
 
   static const String _clientBasePath = 'v1/customer/purchase/';
 
-  Future<StartPurchaseResponse> startPurchase(MakePurchaseOptions options) {
+  Future<StartPurchaseResponse> startPurchase(MakePurchaseOptions options, String customerId) {
     return _client.post<StartPurchaseResponse>(
       path: '${_clientBasePath}start_purchase',
-      data: options.toJson(),
+      data: {
+      ...options.toJson(),
+      'customer_id': customerId,
+    },
       parser: (data) =>
           StartPurchaseResponse.fromJson(data as Map<String, dynamic>),
+    );
+  }
+
+  Future<AttachPaymentMethodToSubscriptionResponse>
+  attachPaymentMethodToSubscription({
+    required RevenipeCustomer customer,
+    String? fromProductId,
+    required AttachPaymentMethodOptions options,
+  }) async {
+    final subscription = resolveSubscriptionForPaymentMethodAttach(
+      subscriptions: customer.subscriptions,
+      fromProductId: fromProductId,
+    );
+
+    final request = _AttachPaymentMethodToSubscriptionPlanRequest(
+      clientId: customer.customerId,
+      sourceId: subscription.accessSourceId,
+      successUrl: options.successUrl,
+      cancelUrl: options.cancelUrl,
+      mode: options.method.value,
+    );
+
+    return _client.post<AttachPaymentMethodToSubscriptionResponse>(
+      path: '${_clientBasePath}subscriptions/attach/payment_method',
+      data: request.toJson(),
+      parser: (data) => AttachPaymentMethodToSubscriptionResponse.fromJson(
+        data as Map<String, dynamic>,
+      ),
     );
   }
 
@@ -80,26 +104,52 @@ class PurchaseService {
     );
   }
 
-  Future<CancelAddOnResponse> cancelAddOn({
+  Future<UncancelSubscriptionResponse> uncancelSubscription({
     required RevenipeCustomer customer,
-    String? productId,
+    required String productId,
   }) async {
-    final addOn = resolveAddOnForCancel(
-      addOns: customer.addOns,
+    final subscription = resolveSubscriptionForUncancel(
+      subscriptions: customer.subscriptions,
       productId: productId,
     );
 
-    final request = _CancelAddOnRequest(
+    final request = _UncancelSubscriptionRequest(
       clientId: customer.customerId,
-      sourceId: addOn.accessSourceId,
+      sourceId: subscription.accessSourceId,
     );
 
-    return _client.post<CancelAddOnResponse>(
-      path: '${_clientBasePath}add_on/cancel',
+    return _client.post<UncancelSubscriptionResponse>(
+      path: '${_clientBasePath}subscription/uncancel',
       data: request.toJson(),
       parser: (data) =>
-          CancelAddOnResponse.fromJson(data as Map<String, dynamic>),
+          UncancelSubscriptionResponse.fromJson(data as Map<String, dynamic>),
     );
+  }
+}
+
+class _AttachPaymentMethodToSubscriptionPlanRequest {
+  final String clientId;
+  final String sourceId;
+  final String mode;
+  final String? successUrl;
+  final String? cancelUrl;
+
+  const _AttachPaymentMethodToSubscriptionPlanRequest({
+    required this.clientId,
+    required this.sourceId,
+    required this.mode,
+    this.cancelUrl,
+    this.successUrl,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'access_source_id': sourceId,
+      'mode': mode,
+      'success_url': successUrl,
+      'cancel_url': cancelUrl,
+      'client_id': clientId,
+    };
   }
 }
 
@@ -143,13 +193,19 @@ class _CancelSubscriptionRequest {
   }
 }
 
-class _CancelAddOnRequest {
+class _UncancelSubscriptionRequest {
   final String clientId;
   final String sourceId;
 
-  const _CancelAddOnRequest({required this.clientId, required this.sourceId});
+  const _UncancelSubscriptionRequest({
+    required this.clientId,
+    required this.sourceId,
+  });
 
   Map<String, dynamic> toJson() {
-    return {'client_id': clientId, 'source_id': sourceId};
+    return {
+      'client_id': clientId,
+      'source_id': sourceId,
+    };
   }
 }

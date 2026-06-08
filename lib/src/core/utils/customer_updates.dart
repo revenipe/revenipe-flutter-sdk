@@ -12,9 +12,7 @@ extension RevenipeCustomerUpdates on RevenipeCustomer {
     return copyWith(entitlements: updatedEntitlements);
   }
 
-  RevenipeCustomer updateEntitlements(
-    List<CustomerEntitlement> updatedItems,
-  ) {
+  RevenipeCustomer updateEntitlements(List<CustomerEntitlement> updatedItems) {
     final map = {
       for (final entitlement in entitlements)
         entitlement.entitlementId: entitlement,
@@ -58,7 +56,6 @@ extension RevenipeCustomerEntitlementValueUpdate on RevenipeCustomer {
     return copyWith(entitlements: updatedEntitlements);
   }
 }
-
 
 extension RevenipeCustomerUsageKeyUpdate on RevenipeCustomer {
   RevenipeCustomer updateUsageKeyRemaining({

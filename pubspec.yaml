@@ -1,11 +1,19 @@
 name: revenipe_flutter
-description: Base Flutter SDK for Revenipe with a clean core architecture for configuration, transport, sessions, and typed models.
-version: 0.0.1
-homepage:
+description: Billing, subscriptions, trials and entitlements for Flutter apps powered by Revenipe.
+version: 0.1.3
+homepage: https://revenipe.com
+repository: https://github.com/revenipe/revenipe-flutter-sdk
+documentation: https://docs.revenipe.com
+issue_tracker: https://github.com/revenipe/revenipe-flutter-sdk/issues
 
 environment:
   sdk: ^3.9.2
   flutter: ">=1.17.0"
+
+
+screenshots:
+  - description: 'Configure products, connect the Revenipe Flutter SDK, and start collecting payments.'
+    path: assets/readme/go_live_in_3_steps.png
 
 dependencies:
   flutter:

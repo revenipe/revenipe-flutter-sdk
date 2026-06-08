@@ -7,7 +7,6 @@ class MakePurchaseOptions {
   final String? successUrl;
   final String? cancelUrl;
   final Map<String, String>? extraParams;
-  final String customerId;
   final TrialPaymentMethodBehavior? trialPaymentMethodBehavior;
 
   const MakePurchaseOptions({
@@ -17,14 +16,12 @@ class MakePurchaseOptions {
     this.cancelUrl,
     this.extraParams,
     this.trialPaymentMethodBehavior,
-    required this.customerId,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'product_id': productId,
       'purchase_method': method.value,
-      'customer_id': customerId,
       if (trialPaymentMethodBehavior != null)
         'trial_payment_method_behavior': trialPaymentMethodBehavior!.value,
       if (successUrl != null) 'success_url': successUrl,
