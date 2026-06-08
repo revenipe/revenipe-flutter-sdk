@@ -1,19 +1,8 @@
 import 'package:revenipe_flutter/revenipe_flutter.dart';
-import 'package:revenipe_flutter/src/core/respponses/app_products_response.dart';
-import 'package:revenipe_flutter/src/core/respponses/attach_payment_method_to_subscription_response.dart';
-import 'package:revenipe_flutter/src/core/respponses/cancel_add_on_response.dart';
-import 'package:revenipe_flutter/src/core/respponses/cancel_subscription_response.dart';
-import 'package:revenipe_flutter/src/core/respponses/change_subscription_response.dart';
-import 'package:revenipe_flutter/src/core/respponses/start_purchase_response.dart';
-import 'package:revenipe_flutter/src/core/respponses/track_respopnse.dart';
 import 'package:revenipe_flutter/src/core/respponses/uncancel_subscription_response.dart';
-import 'package:revenipe_flutter/src/core/utils/reslovers/cancel_add_on_reslover.dart';
 import 'package:revenipe_flutter/src/core/utils/reslovers/cancel_subscription_reslover.dart';
 import 'package:revenipe_flutter/src/core/utils/reslovers/from_subscription_reslover.dart';
 import 'package:revenipe_flutter/src/core/utils/reslovers/uncancel_subscription_reslover.dart';
-import 'package:revenipe_flutter/src/purchase/attach_payment_method_options.dart';
-import 'package:revenipe_flutter/src/purchase/purchase_options.dart';
-import 'package:revenipe_flutter/src/purchase/subscription_cancel_mode.dart';
 import '../network/revenipe_http_client.dart';
 
 class PurchaseService {
@@ -23,10 +12,13 @@ class PurchaseService {
 
   static const String _clientBasePath = 'v1/customer/purchase/';
 
-  Future<StartPurchaseResponse> startPurchase(MakePurchaseOptions options) {
+  Future<StartPurchaseResponse> startPurchase(MakePurchaseOptions options, String customerId) {
     return _client.post<StartPurchaseResponse>(
       path: '${_clientBasePath}start_purchase',
-      data: options.toJson(),
+      data: {
+      ...options.toJson(),
+      'customer_id': customerId,
+    },
       parser: (data) =>
           StartPurchaseResponse.fromJson(data as Map<String, dynamic>),
     );

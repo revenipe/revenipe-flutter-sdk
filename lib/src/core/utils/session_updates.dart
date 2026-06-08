@@ -1,4 +1,6 @@
 import 'package:revenipe_flutter/revenipe_flutter.dart';
+import 'package:revenipe_flutter/src/core/respponses/refresh_entitlements_response.dart';
+import 'package:revenipe_flutter/src/core/utils/customer_refresh.dart';
 import 'package:revenipe_flutter/src/core/utils/customer_updates.dart';
 
 extension RevenipeSessionValueUpdate on RevenipeSession {
@@ -36,6 +38,16 @@ extension RevenipeSessionUsageKeyUpdate on RevenipeSession {
       usageKeyId: usageKeyId,
       newRemaining: newRemaining,
     );
+
+    return copyWith(customer: updatedCustomer);
+  }
+}
+
+extension RevenipeSessionRefreshUpdate on RevenipeSession {
+  RevenipeSession updateFromRefreshResponse(
+    RefreshClientEntitlementsResponse response,
+  ) {
+    final updatedCustomer = customer.updateFromRefreshResponse(response);
 
     return copyWith(customer: updatedCustomer);
   }

@@ -90,7 +90,6 @@ Future<StartPurchaseResponse> startHostedCheckoutPurchase(
     options: MakePurchaseOptions(
       productId: productId,
       method: RevenipePurchaseMethod.hostedCheckout,
-      customerId: internalClientId,
       successUrl: successUrl,
       cancelUrl: cancelUrl,
       trialPaymentMethodBehavior: trialPaymentMethodBehavior,

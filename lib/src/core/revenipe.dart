@@ -1,8 +1,8 @@
 import 'package:revenipe_flutter/src/core/respponses/app_products_response.dart';
 import 'package:revenipe_flutter/src/core/respponses/attach_payment_method_to_subscription_response.dart';
-import 'package:revenipe_flutter/src/core/respponses/cancel_add_on_response.dart';
 import 'package:revenipe_flutter/src/core/respponses/cancel_subscription_response.dart';
 import 'package:revenipe_flutter/src/core/respponses/change_subscription_response.dart';
+import 'package:revenipe_flutter/src/core/respponses/refresh_entitlements_response.dart';
 import 'package:revenipe_flutter/src/core/respponses/start_purchase_response.dart';
 import 'package:revenipe_flutter/src/core/respponses/track_respopnse.dart';
 import 'package:revenipe_flutter/src/core/respponses/uncancel_subscription_response.dart';
@@ -42,6 +42,25 @@ class Revenipe {
   String? get appId => _config?.appId;
   String? get currentCustomerId => _session?.customerId;
   RevenipeCustomer? get customer => _session?.customer;
+
+
+  /// Refreshes the current customer's entitlements and access state from Revenipe.
+  ///
+  /// This updates the active SDK session with the latest entitlements, usage keys,
+  /// subscriptions, add-ons, and base plans returned by the backend.
+  ///
+  /// Returns the raw refresh response from the API.
+  Future<RefreshClientEntitlementsResponse> refreshEntitlements() async {
+    final customerService = _requireCustomerService();
+
+    final cus = _requireCustomer();
+
+    final response = await customerService.refreshEntitlements(cus.customerId);
+
+    _session = _session!.updateFromRefreshResponse(response);
+
+    return response;
+  }
 
   /// Uncancels a subscription that is currently scheduled to cancel at the end
   /// of the billing period.
@@ -254,7 +273,8 @@ class Revenipe {
     required MakePurchaseOptions options,
   }) async {
     final purchaseService = _requirePurchaseService();
-    final response = await purchaseService.startPurchase(options);
+    final cus = _requireCustomer();
+    final response = await purchaseService.startPurchase(options, cus.customerId);
     return response;
   }
 

@@ -21,3 +21,8 @@
 ## 0.1.3
 
 - Added UncancelSubscription
+
+## 0.1.4
+
+- Added RefreshEntitlements()
+- Fixed README.md

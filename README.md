@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="assets/readme/revenipe_hero.png" alt="Revenipe Flutter SDK — Billing and entitlements for Flutter apps" width="100%" />
-</p>
+![Revenipe Flutter SDK — Billing and entitlements for Flutter apps](assets/readme/revenipe_hero.png)
 
 # Revenipe Flutter SDK
 
@@ -20,9 +18,7 @@ Revenipe is a monetization backend and Flutter SDK for apps using **Stripe** and
 > RevenueCat integration is currently in development and is not yet available in this SDK release. Stripe billing flows are available now. RevenueCat support will be released in an upcoming version.
 
 
-<p align="center">
-  <img src="assets/readme/go_live_in_3_steps.png" alt="Configure, connect and collect with Revenipe" width="100%" />
-</p>
+![Configure, connect and collect with Revenipe](assets/readme/go_live_in_3_steps.png)
 
 ## Features
 
