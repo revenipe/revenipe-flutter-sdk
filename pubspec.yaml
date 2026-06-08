@@ -1,6 +1,6 @@
 name: revenipe_flutter
 description: Billing, subscriptions, trials and entitlements for Flutter apps powered by Revenipe.
-version: 0.1.3
+version: 0.1.4
 homepage: https://revenipe.com
 repository: https://github.com/revenipe/revenipe-flutter-sdk
 documentation: https://docs.revenipe.com

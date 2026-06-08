@@ -1,4 +1,4 @@
-![Revenipe Flutter SDK — Billing and entitlements for Flutter apps](assets/readme/revenipe_hero.png)
+![Revenipe Flutter SDK — Billing and entitlements for Flutter apps](https://raw.githubusercontent.com/revenipe/revenipe-flutter-sdk/main/assets/readme/revenipe_hero.png)
 
 # Revenipe Flutter SDK
 
@@ -18,7 +18,7 @@ Revenipe is a monetization backend and Flutter SDK for apps using **Stripe** and
 > RevenueCat integration is currently in development and is not yet available in this SDK release. Stripe billing flows are available now. RevenueCat support will be released in an upcoming version.
 
 
-![Configure, connect and collect with Revenipe](assets/readme/go_live_in_3_steps.png)
+![Configure, connect and collect with Revenipe](https://raw.githubusercontent.com/revenipe/revenipe-flutter-sdk/main/assets/readme/go_live_in_3_steps.png)
 
 ## Features
 
@@ -130,7 +130,7 @@ await launchUrl(
 After the customer returns to your app, load their latest Revenipe state:
 
 ```dart
-final updatedCustomer = await revenipe.refreshCustomer();
+final updatedEntitlements = await revenipe.refreshEntitlements();
 ```
 
 ### PaymentSheet
@@ -295,9 +295,9 @@ final response = await revenipe.attachPaymentMethodToSubscription(
 Payment-method attachment is finalized asynchronously after Stripe confirms the SetupIntent. Refresh the customer to read the updated subscription state:
 
 ```dart
-final updatedCustomer = await revenipe.refreshCustomer();
+final updatedEntitlements = await revenipe.refreshEntitlements();
 
-final subscription = updatedCustomer.subscriptions.firstWhere(
+final subscription = updatedEntitlements.subscriptions.firstWhere(
   (subscription) => subscription.productId == 'pro_monthly',
 );
 
@@ -412,7 +412,7 @@ final result = await revenipe.cancelSubscription(
 Reload the customer after billing changes to retrieve the latest subscription and entitlement state:
 
 ```dart
-final updatedCustomer = await revenipe.refreshCustomer();
+final updatedEntitlements = await revenipe.refreshEntitlements();
 ```
 
 ## Local customer state
