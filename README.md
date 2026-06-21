@@ -1,4 +1,4 @@
-![Revenipe Flutter SDK — Billing and entitlements for Flutter apps](https://raw.githubusercontent.com/revenipe/revenipe-flutter-sdk/main/assets/readme/revenipe_hero.png)
+![Revenipe Flutter SDK — Billing and entitlements for Flutter apps](https://raw.githubusercontent.com/revenipe/revenipe-flutter-sdk/refs/heads/main/assets/readme/revenipe_hero.png)
 
 # Revenipe Flutter SDK
 
