@@ -5,6 +5,7 @@
 [![Pub release](https://img.shields.io/pub/v/revenipe_flutter.svg?style=flat-square)](https://pub.dev/packages/revenipe_flutter)
 [![Flutter SDK](https://img.shields.io/badge/Flutter-SDK-02569B?style=flat-square\&logo=flutter\&logoColor=white)](https://flutter.dev)
 [![Documentation](https://img.shields.io/badge/docs-docs.revenipe.com-2F7BFF?style=flat-square)](https://docs.revenipe.com)
+[![Discord](https://img.shields.io/badge/Discord-Join%20community-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.com/invite/CzTUUPWYxS)
 [![GitHub](https://img.shields.io/badge/GitHub-revenipe--flutter--sdk-111827?style=flat-square\&logo=github)](https://github.com/revenipe/revenipe-flutter-sdk)
 [![License](https://img.shields.io/badge/License-MIT-111827?style=flat-square)](LICENSE)
 
@@ -13,9 +14,6 @@
 > Build products in the dashboard. Connect your Flutter app. Let Revenipe handle subscriptions, trials, one-off payments, usage limits and customer access state.
 
 Revenipe is a monetization backend and Flutter SDK for apps using **Stripe** and **RevenueCat**. It gives your app one clean customer model for products, purchases, subscriptions, entitlements and usage-based features — without building the billing backend yourself.
-
-> **RevenueCat support is coming soon**
-> RevenueCat integration is currently in development and is not yet available in this SDK release. Stripe billing flows are available now. RevenueCat support will be released in an upcoming version.
 
 
 ![Configure, connect and collect with Revenipe](https://raw.githubusercontent.com/revenipe/revenipe-flutter-sdk/main/assets/readme/go_live_in_3_steps.png)

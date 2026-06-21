@@ -11,7 +11,7 @@ class UsageKey {
 
   factory UsageKey.fromJson(Map<String, dynamic> json) {
     return UsageKey(
-      usageKeyId: json['usage_key_id'] as String? ?? '',
+      usageKeyId: json['key_id'] as String? ?? '',
       name: json['name'] as String? ?? '',
       remaining: json['remaining'] as int? ?? 0,
     );
