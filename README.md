@@ -30,7 +30,85 @@ Revenipe is a monetization backend and Flutter SDK for apps using **Stripe** and
 * **Subscription plan changes and cancellation**
 * **Stripe and RevenueCat** support through one backend layer
 
-## Quick start
+## RevenueCat
+
+Revenipe can be used together with RevenueCat for Flutter apps that sell subscriptions or in-app purchases through the App Store and Google Play.
+
+RevenueCat handles the native purchase flow. Revenipe listens to RevenueCat events, syncs the customer access state, and exposes products, entitlements, credits, and usage limits through the Revenipe Flutter SDK.
+
+### How it works
+
+```text
+App Store / Google Play
+        ↓
+RevenueCat purchase
+        ↓
+RevenueCat webhook
+        ↓
+Revenipe access + entitlements
+        ↓
+Flutter app
+```
+
+### Example flow
+
+1. Configure your RevenueCat products in the Revenipe dashboard.
+2. Attach Revenipe entitlements to the product.
+3. Set up the RevenueCat webhook in Revenipe.
+4. Start the purchase with the RevenueCat SDK.
+5. Refresh the Revenipe customer after the purchase.
+6. Check credits and track usage with the Revenipe Flutter SDK.
+
+### Credits and usage tracking
+
+RevenueCat can handle the store purchase, while Revenipe manages the actual entitlement logic behind the product.
+
+For example, a RevenueCat subscription can grant renewable credits such as `ai_credits`. Your app can check the remaining credits and track usage through the Revenipe Flutter SDK.
+
+```dart
+// After a successful RevenueCat purchase, refresh Revenipe.
+await Revenipe.instance.refreshCustomer();
+
+// Read the current credit entitlement.
+final credits = Revenipe.instance.getEntitlement('ai_credits');
+
+if (credits != null && credits.remaining > 0) {
+  await Revenipe.instance.track(
+    entitlementId: 'ai_credits',
+    amount: 1,
+  );
+
+  // Run the credit-based feature.
+  // Example: generate an AI image, export a file, or consume one credit.
+} else {
+  // No credits left.
+  // Show an upgrade, renewal, or credit purchase screen.
+}
+```
+
+### What Revenipe adds on top of RevenueCat
+
+RevenueCat manages the store purchase and subscription state. Revenipe adds a backend entitlement layer that your Flutter app can use for access decisions.
+
+You can model access like:
+
+- premium feature flags
+- credit packs
+- daily renewable limits
+- weekly renewable limits
+- trial access
+- one-off unlocks
+- usage-based entitlements
+
+For example, a RevenueCat subscription can unlock `pro_access`, grant `250` credits, and renew `10_ai_generations_per_day` automatically.
+
+Your Flutter app can then rely on Revenipe for entitlement checks, credit balances, and usage tracking instead of hardcoding purchase logic directly in the client.
+
+### Free base plans
+
+You can define a free base plan in Revenipe that is automatically attached to every new customer. Base plans are useful for default access, free tiers, trial-like onboarding, or limited starter credits before a customer upgrades to a paid product.
+
+## Quick start Stripe
 
 ### Install
 
