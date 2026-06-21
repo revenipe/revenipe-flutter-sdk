@@ -764,7 +764,7 @@ class Revenipe {
   }
 
   AppService _requireAppService() {
-    if (!isInitialized || _appService == null) {
+    if (!isInitialized || _appService == null || !isIdentified) {
       throw const RevenipeConfigurationException(
         'Revenipe is not configured. Call Revenipe.instance.configure(...) first.',
       );
@@ -784,7 +784,7 @@ class Revenipe {
   }
 
   RevenipeCustomer _requireCustomer() {
-    if (!isInitialized || customer == null) {
+    if (!isInitialized || customer == null || !isIdentified) {
       throw const RevenipeConfigurationException(
         'Revenipe is not configured or the user is not logged in. Call Revenipe.instance.configure(...) / evenipe.instance.login(...) first.',
       );
